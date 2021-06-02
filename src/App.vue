@@ -1,32 +1,30 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <router-view @jwt-changed="handleJwtChange" />
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+export default {
+  data () {
+    return {
+      jwt: localStorage.getItem('jwt')
+    }
+  },
+  created () {
+    this.toHomeGuarded()
+  },
+  methods: {
+    handleJwtChange (jwt) {
+      this.jwt = jwt
+      console.info(jwt)
+      localStorage.setItem('jwt', jwt)
+    },
+    toHomeGuarded () {
+      if (!this.jwt && window.location.hash !== '#/auth') {
+        this.$router.push({ path: '/auth' })
+      }
+    }
+  }
 }
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
